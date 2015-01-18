@@ -36,7 +36,7 @@ var Dropdown = (function() {
     .on('mouseleave.tt', '.tt-suggestion', onSuggestionMouseLeave);
 
     _.each(this.datasets, function(dataset) {
-      that.$menu.append(dataset.getRoot());
+      that.$menu.find('.tt-dropdown-menu').append(dataset.getRoot());
       dataset.onSync('rendered', that._onRendered, that);
     });
   }

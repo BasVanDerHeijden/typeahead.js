@@ -27,7 +27,7 @@ var Typeahead = (function() {
     this.minLength = _.isNumber(o.minLength) ? o.minLength : 1;
     this.$node = buildDom(o.input, o.withHint);
 
-    $menu = this.$node.find('.tt-dropdown-menu');
+    $menu = this.$node.find('.popover');
     $input = this.$node.find('.tt-input');
     $hint = this.$node.find('.tt-hint');
 
@@ -323,7 +323,8 @@ var Typeahead = (function() {
 
     $input = $(input);
     $wrapper = $(html.wrapper).css(css.wrapper);
-    $dropdown = $(html.dropdown).css(css.dropdown);
+    $dropdown = $(html.dropdown).css(css.dropdown);  
+
     $hint = $input.clone().css(css.hint).css(getBackgroundStyles($input));
 
     $hint

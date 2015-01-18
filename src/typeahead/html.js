@@ -7,9 +7,9 @@
 var html = (function() {
   return {
     wrapper: '<span class="twitter-typeahead"></span>',
-    dropdown: '<span class="tt-dropdown-menu"></span>',
+    dropdown: '<div class="popover bottom clearfix" style="display: block;"><div class="arrow left"></div><div class="popover-content"><div class="popover-inner-wrapper"><span class="tt-dropdown-menu"></span></div></div></div>',
     dataset: '<div class="tt-dataset-%CLASS%"></div>',
     suggestions: '<span class="tt-suggestions"></span>',
-    suggestion: '<div class="tt-suggestion"></div>'
+    suggestion: '<li class="tt-suggestion"></li>'
   };
 })();

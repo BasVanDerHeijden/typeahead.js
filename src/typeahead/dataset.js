@@ -105,17 +105,26 @@ var Dataset = (function() {
           _.each(nodes, function(node) {
             var cat = typeof that.displayCategory === 'function' ? that.displayCategory(node.data(datumKey)):  node.data(datumKey)[that.displayCategory];
             if (typeof catNodes[cat] === 'undefined') {
-              catNodes[cat] = [];
+              catNodes[cat] = $('<div><div class="margin-bottom-xss"><a href="#" class="label label-default">' + cat + '</a></div><ul class="list-inline no-spacing spacing"></ul></div>');
             }
-            catNodes[cat].push(node);
+            catNodes[cat].find('ul').append(node);
+          });
+
+          // Sort
+          var keys = [];
+          _.each(catNodes, function(cnodes, cat) {
+              keys.push(cat);
+          });
+          keys.sort();
+
+          var sorted = {};
+          _.each(keys, function(key, i) {
+              sorted[key] = catNodes[key];
           });
 
           nodes = [];
-
-          _.each(catNodes, function(cnodes, cat) {
-            nodes.push(that.templates.category.header(cat));
-            nodes = nodes.concat(cnodes);
-            //nodes.push(that.templates.category.footer(cat));
+          _.each(sorted, function(cnodes, cat) {
+              nodes = nodes.concat(cnodes);
           });
         }
 
@@ -128,20 +137,20 @@ var Dataset = (function() {
         });
 
         return $suggestions;
+      }
 
-        function getSuggestionNode(suggestion) {
-          var $el;
+      function getSuggestionNode(suggestion) {
+        var $el;
 
-          $el = $(html.suggestion)
-          .append(that.templates.suggestion(suggestion))
-          .data(datasetKey, that.name)
-          .data(valueKey, that.displayFn(suggestion))
-          .data(datumKey, suggestion);
+        $el = $(html.suggestion)
+        .append(that.templates.suggestion(suggestion))
+        .data(datasetKey, that.name)
+        .data(valueKey, that.displayFn(suggestion))
+        .data(datumKey, suggestion);
 
-          $el.children().each(function() { $(this).css(css.suggestionChild); });
+        $el.children().each(function() { $(this).css(css.suggestionChild); });
 
-          return $el;
-        }
+        return $el;
       }
 
       function getHeaderHtml() {
@@ -220,7 +229,9 @@ var Dataset = (function() {
       footer: templates.footer && _.templatify(templates.footer),
       suggestion: templates.suggestion || suggestionTemplate,
       category: {
-        header: templates.category && templates.category.header || categoryHeaderTemplate
+        header: templates.category && templates.category.header || categoryHeaderTemplate,
+        footer: templates.category && templates.category.footer || function() { return ''},
+        wrap: templates.category && templates.category.wrap || '<span/>',
       }
     };
 

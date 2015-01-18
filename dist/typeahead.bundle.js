@@ -1,7 +1,7 @@
 /*!
  * typeahead.js 0.10.5
  * https://github.com/twitter/typeahead.js
- * Copyright 2013-2014 Twitter, Inc. and other contributors; Licensed MIT
+ * Copyright 2013-2015 Twitter, Inc. and other contributors; Licensed MIT
  */
 
 (function($) {
@@ -727,10 +727,10 @@
     var html = function() {
         return {
             wrapper: '<span class="twitter-typeahead"></span>',
-            dropdown: '<span class="tt-dropdown-menu"></span>',
+            dropdown: '<div class="popover bottom clearfix typeahead" style="display: block;"><div class="arrow left"></div><div class="popover-content"><div class="popover-inner-wrapper"><span class="tt-dropdown-menu"></span></div></div></div>',
             dataset: '<div class="tt-dataset-%CLASS%"></div>',
             suggestions: '<span class="tt-suggestions"></span>',
-            suggestion: '<div class="tt-suggestion"></div>'
+            suggestion: '<li class="tt-suggestion"></li>'
         };
     }();
     var css = function() {
@@ -1208,13 +1208,21 @@
                         _.each(nodes, function(node) {
                             var cat = typeof that.displayCategory === "function" ? that.displayCategory(node.data(datumKey)) : node.data(datumKey)[that.displayCategory];
                             if (typeof catNodes[cat] === "undefined") {
-                                catNodes[cat] = [];
+                                catNodes[cat] = $('<div><div class="margin-bottom-xss"><a href="#" class="label label-default">' + cat + '</a></div><ul class="list-inline no-spacing spacing"></ul></div>');
                             }
-                            catNodes[cat].push(node);
+                            catNodes[cat].find("ul").append(node);
+                        });
+                        var keys = [];
+                        _.each(catNodes, function(cnodes, cat) {
+                            keys.push(cat);
+                        });
+                        keys.sort();
+                        var sorted = {};
+                        _.each(keys, function(key, i) {
+                            sorted[key] = catNodes[key];
                         });
                         nodes = [];
-                        _.each(catNodes, function(cnodes, cat) {
-                            nodes.push(that.templates.category.header(cat));
+                        _.each(sorted, function(cnodes, cat) {
                             nodes = nodes.concat(cnodes);
                         });
                     }
@@ -1225,14 +1233,14 @@
                         pattern: query
                     });
                     return $suggestions;
-                    function getSuggestionNode(suggestion) {
-                        var $el;
-                        $el = $(html.suggestion).append(that.templates.suggestion(suggestion)).data(datasetKey, that.name).data(valueKey, that.displayFn(suggestion)).data(datumKey, suggestion);
-                        $el.children().each(function() {
-                            $(this).css(css.suggestionChild);
-                        });
-                        return $el;
-                    }
+                }
+                function getSuggestionNode(suggestion) {
+                    var $el;
+                    $el = $(html.suggestion).append(that.templates.suggestion(suggestion)).data(datasetKey, that.name).data(valueKey, that.displayFn(suggestion)).data(datumKey, suggestion);
+                    $el.children().each(function() {
+                        $(this).css(css.suggestionChild);
+                    });
+                    return $el;
                 }
                 function getHeaderHtml() {
                     return that.templates.header({
@@ -1291,7 +1299,11 @@
                 footer: templates.footer && _.templatify(templates.footer),
                 suggestion: templates.suggestion || suggestionTemplate,
                 category: {
-                    header: templates.category && templates.category.header || categoryHeaderTemplate
+                    header: templates.category && templates.category.header || categoryHeaderTemplate,
+                    footer: templates.category && templates.category.footer || function() {
+                        return "";
+                    },
+                    wrap: templates.category && templates.category.wrap || "<span/>"
                 }
             };
             function suggestionTemplate(context) {
@@ -1321,7 +1333,7 @@
             onSuggestionMouseLeave = _.bind(this._onSuggestionMouseLeave, this);
             this.$menu = $(o.menu).on("click.tt", ".tt-suggestion", onSuggestionClick).on("mouseenter.tt", ".tt-suggestion", onSuggestionMouseEnter).on("mouseleave.tt", ".tt-suggestion", onSuggestionMouseLeave);
             _.each(this.datasets, function(dataset) {
-                that.$menu.append(dataset.getRoot());
+                that.$menu.find(".tt-dropdown-menu").append(dataset.getRoot());
                 dataset.onSync("rendered", that._onRendered, that);
             });
         }
@@ -1478,7 +1490,7 @@
             this.autoselect = !!o.autoselect;
             this.minLength = _.isNumber(o.minLength) ? o.minLength : 1;
             this.$node = buildDom(o.input, o.withHint);
-            $menu = this.$node.find(".tt-dropdown-menu");
+            $menu = this.$node.find(".popover");
             $input = this.$node.find(".tt-input");
             $hint = this.$node.find(".tt-hint");
             $input.on("blur.tt", function($e) {

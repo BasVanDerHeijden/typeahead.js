@@ -1525,9 +1525,7 @@
         _.mixin(Typeahead.prototype, {
             _onSuggestionClicked: function onSuggestionClicked(type, $el) {
                 var datum;
-                if (datum = this.dropdown.getDatumForSuggestion($el)) {
-                    this._select(datum);
-                }
+                if (datum = this.dropdown.getDatumForSuggestion($el)) {}
             },
             _onCursorMoved: function onCursorMoved() {
                 var datum = this.dropdown.getDatumForCursor();

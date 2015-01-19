@@ -91,7 +91,7 @@ var Typeahead = (function() {
       var datum;
 
       if (datum = this.dropdown.getDatumForSuggestion($el)) {
-        this._select(datum);
+        // this._select(datum);
       }
     },
 

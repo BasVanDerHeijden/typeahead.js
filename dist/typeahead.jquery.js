@@ -610,7 +610,7 @@
                         _.each(nodes, function(node) {
                             var cat = typeof that.displayCategory === "function" ? that.displayCategory(node.data(datumKey)) : node.data(datumKey)[that.displayCategory];
                             if (typeof catNodes[cat] === "undefined") {
-                                catNodes[cat] = $('<div><div class="margin-bottom-xss"><a href="#" class="category">' + cat + '</a></div><ul class="list-inline no-spacing spacing"></ul></div>');
+                                catNodes[cat] = $('<div><div class="margin-bottom-xss clearfix"><span class="category">' + cat + '</span></div><ul class="list-inline no-spacing spacing"></ul></div>');
                             }
                             catNodes[cat].find("ul").append(node);
                         });

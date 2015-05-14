@@ -129,7 +129,7 @@
     var html = function() {
         return {
             wrapper: '<span class="twitter-typeahead"></span>',
-            dropdown: '<div class="popover bottom clearfix typeahead" style="display: block;"><div class="arrow left"></div><div class="popover-content"><div class="popover-inner-wrapper"><span class="tt-dropdown-menu"></span></div></div></div>',
+            dropdown: '<div class="popover bottom clearfix typeahead" style="display: block;"><div class="arrow left"></div><div class="popover-content"><div class="popover-inner-wrapper"><span class="tt-dropdown-menu"><h5 class="empty">Bezig met zoeken</h5></span></div></div></div>',
             dataset: '<div class="tt-dataset-%CLASS%"></div>',
             suggestions: '<span class="tt-suggestions"></span>',
             suggestion: '<li class="tt-suggestion"></li>'
@@ -566,6 +566,10 @@
             this.query = null;
             this.highlight = !!o.highlight;
             this.name = o.name || _.getUniqueId();
+            this.onUpdate = function() {
+                var cb = o.onUpdate || function() {};
+                cb(o);
+            };
             this.source = o.source;
             this.displayFn = getDisplayFn(o.display || o.displayKey);
             this.displayCategory = o.displayCategory || false;
@@ -665,6 +669,7 @@
                 this.query = query;
                 this.canceled = false;
                 this.source(query, render);
+                this.onUpdate();
                 function render(suggestions) {
                     if (!that.canceled && query === that.query) {
                         that._render(query, suggestions);
@@ -729,7 +734,11 @@
             }
             this.isOpen = false;
             this.isEmpty = true;
-            this.datasets = _.map(o.datasets, initializeDataset);
+            var datasets = _.map(o.datasets, function(dataset) {
+                dataset.dropdown = that;
+                return dataset;
+            });
+            this.datasets = _.map(datasets, initializeDataset);
             onSuggestionClick = _.bind(this._onSuggestionClick, this);
             onSuggestionMouseEnter = _.bind(this._onSuggestionMouseEnter, this);
             onSuggestionMouseLeave = _.bind(this._onSuggestionMouseLeave, this);

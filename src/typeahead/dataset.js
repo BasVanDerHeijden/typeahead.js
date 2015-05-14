@@ -30,6 +30,11 @@ var Dataset = (function() {
     this.highlight = !!o.highlight;
     this.name = o.name || _.getUniqueId();
 
+    this.onUpdate = function() {
+      var cb = o.onUpdate || function() {};
+      cb(o);
+    };
+
     this.source = o.source;
     this.displayFn = getDisplayFn(o.display || o.displayKey);
     this.displayCategory = o.displayCategory || false;
@@ -180,6 +185,7 @@ var Dataset = (function() {
       this.query = query;
       this.canceled = false;
       this.source(query, render);
+      this.onUpdate();
 
       function render(suggestions) {
         // if the update has been canceled or if the query has changed

@@ -23,7 +23,11 @@ var Dropdown = (function() {
     this.isOpen = false;
     this.isEmpty = true;
 
-    this.datasets = _.map(o.datasets, initializeDataset);
+    var datasets = _.map(o.datasets, function(dataset) {
+      dataset.dropdown = that;
+      return dataset;
+    });
+    this.datasets = _.map(datasets, initializeDataset);
 
     // bound functions
     onSuggestionClick = _.bind(this._onSuggestionClick, this);

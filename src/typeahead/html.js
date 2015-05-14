@@ -7,7 +7,7 @@
 var html = (function() {
   return {
     wrapper: '<span class="twitter-typeahead"></span>',
-    dropdown: '<div class="popover bottom clearfix typeahead" style="display: block;"><div class="arrow left"></div><div class="popover-content"><div class="popover-inner-wrapper"><span class="tt-dropdown-menu"></span></div></div></div>',
+    dropdown: '<div class="popover bottom clearfix typeahead" style="display: block;"><div class="arrow left"></div><div class="popover-content"><div class="popover-inner-wrapper"><span class="tt-dropdown-menu"><h5 class="empty">Bezig met zoeken</h5></span></div></div></div>',
     dataset: '<div class="tt-dataset-%CLASS%"></div>',
     suggestions: '<span class="tt-suggestions"></span>',
     suggestion: '<li class="tt-suggestion"></li>'
